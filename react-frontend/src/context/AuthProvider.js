@@ -1,6 +1,5 @@
 import { createContext, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { fakeAuth } from "../utils/FakeAuth";
 import authApi from "../api/AuthApi";
 
 const AuthContext = createContext({});
@@ -30,20 +29,20 @@ export const AuthProvider = ({ children }) => {
   const handleSignup = async (formdata) => {
     try {
       const res = await authApi.post("/signup", formdata);
+      console.log(res);
       if (res.status === 200) {
         navigate("/home/login");
       }
     } catch (error) {
       console.log("error? ", error);
-      return error.message;
+      return error.response.data.message;
     }
   };
   const handlePswdCheck = async (pswd) => {
     try {
       const res = await authApi.post("/validate", { password: pswd });
     } catch (error) {
-      console.log("error? ", error);
-      return error.message;
+      return error.response.data.message;
     }
   };
 

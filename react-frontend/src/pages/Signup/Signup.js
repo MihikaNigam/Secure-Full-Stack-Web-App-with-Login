@@ -42,8 +42,9 @@ export const Signup = () => {
     setIsLoading2(false);
     if (mssg) {
       setSignupStatusMessage(mssg);
+    } else {
+      setIsPasswordValid(true);
     }
-    setIsPasswordValid(true);
   };
   return (
     <>
