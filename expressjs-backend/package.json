@@ -4,11 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "generate-sbom": "cyclonedx-npm"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@cyclonedx/cyclonedx-npm": "^1.16.1",
     "bcrypt": "^5.1.1",
     "cookie-session": "^2.1.0",
     "cors": "^2.8.5",
