@@ -1,9 +1,9 @@
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../context/AuthProvider";
+import cookie from "react-cookies";
 
 export const ProtectedRoute = ({ children }) => {
-  const { value } = useAuth();
-  if (!value.token) {
+  const session = cookie.load("auth-session");
+  if (!session) {
     return <Navigate to="/home" replace />;
   }
   return children;

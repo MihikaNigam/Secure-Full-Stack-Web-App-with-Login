@@ -1,10 +1,10 @@
-import { useAuth } from "../../context/AuthProvider";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import cookie from "react-cookies";
 
 export const Home = () => {
   const navigate = useNavigate();
-  const { value } = useAuth();
+  const session = cookie.load("auth-session");
 
   const nav = (path) => {
     navigate(path);
@@ -13,7 +13,7 @@ export const Home = () => {
   return (
     <>
       <h2>Home (Public)</h2>
-      {!value.token && (
+      {!session && (
         <div>
           <button type="button" onClick={() => nav("/home/login")}>
             Sign In

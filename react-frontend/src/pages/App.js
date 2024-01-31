@@ -7,6 +7,7 @@ import { useAuth } from "../context/AuthProvider";
 import { AuthProvider } from "../context/AuthProvider";
 import { Login } from "./Login/Login";
 import { Signup } from "./Signup/Signup";
+import cookie from "react-cookies";
 
 const App = () => {
   return (
@@ -37,12 +38,13 @@ const App = () => {
 };
 
 const Navigation = () => {
+  const session = cookie.load("auth-session");
   const { value } = useAuth();
   return (
     <nav>
       <NavLink to="/home">Home</NavLink>
       <NavLink to="/landing">Landing</NavLink>
-      {value.token && (
+      {session && (
         <button type="button" onClick={value.onLogout}>
           Sign Out
         </button>

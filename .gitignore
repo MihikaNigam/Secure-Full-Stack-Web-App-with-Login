@@ -3,6 +3,7 @@
 # dependencies
 react-frontend/node_modules
 expressjs-backend/node_modules
+expressjs-backend/.env
 /.pnp
 .pnp.js
 
