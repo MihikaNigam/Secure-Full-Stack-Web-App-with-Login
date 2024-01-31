@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const UserApi = axios.create({
-  baseURL: "http://localhost:8000/api",
+  baseURL: "https://localhost:8000/api",
   headers: { "Content-Type": "application/json" },
   withCredentials: true,
 });
@@ -13,8 +13,8 @@ export const fetchAllUsers = async () => {
     console.log("My userss: ", users);
     return users;
   } catch (error) {
-    console.error("Error fetching users:", error);
-    throw error;
+    console.log("error? ", error);
+    return error.response?.data ? error.response.data.message : error.message;
   }
 };
 

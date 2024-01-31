@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.log("error? ", error);
-      return error.response.data.message;
+      return error.response?.data ? error.response.data.message : error.message;
     }
   };
 
@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
       navigate("/home");
     } catch (error) {
       console.log("error? ", error);
-      return error.response.data.message;
+      return error.response?.data ? error.response.data.message : error.message;
     }
   };
 
@@ -42,14 +42,14 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.log("error? ", error);
-      return error.response.data.message;
+      return error.response?.data ? error.response.data.message : error.message;
     }
   };
   const handlePswdCheck = async (pswd) => {
     try {
       const res = await authApi.post("/validate", { password: pswd });
     } catch (error) {
-      return error.response.data.message;
+      return error.response?.data ? error.response.data.message : error.message;
     }
   };
 

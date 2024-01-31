@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import cookie from "react-cookies";
 import { ColorRing } from "react-loader-spinner";
 import { fetchAllUsers } from "../../api/UserApi";
-import "./Landing.css"
+import "./Landing.css";
 
 export const Landing = () => {
   const user = cookie.load("user");
@@ -17,7 +17,7 @@ export const Landing = () => {
     setIsLoading(true);
     const us = await fetchAllUsers();
     setUsers(
-      us &&
+      us.data &&
         us.data.map((i) => {
           return i.username;
         })
@@ -44,20 +44,23 @@ export const Landing = () => {
             colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
           />
         ) : (
-          <UserList setIsLoading={setIsLoading} users={users} />
+          <UserList users={users} />
         )}
       </div>
     </>
   );
 };
 
-export const UserList = ({ setIsLoading, users }) => {
+export const UserList = ({ users }) => {
+  console.log("users : ", users);
   return (
     <ul>
-      {users.length === 0
+      {users?.length === 0
         ? "No Users To Display"
-        : users.map((i) => {
-            return <li>{i}</li>;
+        : !users
+        ? "Couldn't fetch users...."
+        : users.map((user, i) => {
+            return <li key={i}>{user}</li>;
           })}
     </ul>
   );

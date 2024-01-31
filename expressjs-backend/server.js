@@ -1,17 +1,21 @@
 const express = require("express");
+const https = require("https");
+const fs = require("fs");
 const cors = require("cors");
 const cookieSession = require("cookie-session");
+
 const { connectDB } = require("./src/config/db.config");
 const port = process.env.PORT || 8000;
 
 const app = express()
-  .use(cors({ origin: "http://localhost:3000", credentials: true }))
+  .use(cors({ origin: "https://localhost:3000", credentials: true }))
   .use(express.json());
 app.use(
   cookieSession({
     name: "reactApp-session",
     keys: [process.env.COOKIE_SECRET],
     httpOnly: true,
+    secure: true,
   })
 );
 
@@ -22,7 +26,14 @@ require("./src/routes/user.routes")(app);
 //db connect
 connectDB();
 
+//add certs for http
+const options = {
+  key: fs.readFileSync("./certs/key.pem"),
+  cert: fs.readFileSync("./certs/cert.pem"),
+};
+const server = https.createServer(options, app);
+
 //start server
-app.listen(port, () => {
-  console.log(`App listening at http://localhost:${port}`);
+server.listen(port, () => {
+  console.log(`App listening at https://localhost:${port}`);
 });
