@@ -2,7 +2,11 @@
 
 # dependencies
 react-frontend/node_modules
+react-frontend/reactcert
 expressjs-backend/node_modules
+expressjs-backend/certs
+expressjs-backend/.env
+
 /.pnp
 .pnp.js
 
