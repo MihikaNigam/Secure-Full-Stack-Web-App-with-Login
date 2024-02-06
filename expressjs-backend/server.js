@@ -17,6 +17,7 @@ app.use(
     keys: [process.env.COOKIE_SECRET],
     httpOnly: true,
     secure: true,
+    sameSite: "strict", //mitigates csrf risks
   })
 );
 
