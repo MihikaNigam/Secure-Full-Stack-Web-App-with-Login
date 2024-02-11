@@ -3,6 +3,7 @@ const https = require("https");
 const fs = require("fs");
 const cors = require("cors");
 const cookieSession = require("cookie-session");
+var RateLimit = require('express-rate-limit');
 
 const { connectDB } = require("./src/config/db.config");
 const port = process.env.PORT || 8000;
@@ -16,8 +17,19 @@ app.use(
     keys: [process.env.COOKIE_SECRET],
     httpOnly: true,
     secure: true,
+    sameSite: "strict", //mitigates csrf risks
   })
 );
+
+
+// set up rate limiter: maximum of five requests per minute
+var limiter = RateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // max 100 requests per windowMs
+});
+
+// apply rate limiter to all requests
+app.use(limiter);
 
 //routes
 require("./src/routes/auth.routes")(app);

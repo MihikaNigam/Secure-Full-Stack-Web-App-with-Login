@@ -1,5 +1,7 @@
+const _ = require('lodash');
 const db = require("../models");
 const User = db.user;
+
 const getUsers = async (req, res) => {
   try {
     const users = await User.find().select('-password');;
@@ -19,11 +21,13 @@ const findUser = async (req, res) => {
     }
 
     if (req.query.name) {
-      query.name = { $regex: new RegExp(req.query.name, "i") };
+      const sanitizedName = _.escapeRegExp(req.query.name);
+      query.name = { $regex: new RegExp(sanitizedName, "i") };
     }
 
     if (req.query.job) {
-      query.job = { $regex: new RegExp(req.query.job, "i") };
+      const sanitizedJob=_.escapeRegExp(req.query.job);
+      query.job = { $regex: new RegExp(sanitizedJob, "i") };
     }
   } catch (error) {}
 };

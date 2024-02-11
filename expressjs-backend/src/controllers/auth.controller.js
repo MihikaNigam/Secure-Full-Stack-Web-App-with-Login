@@ -95,8 +95,11 @@ exports.validatePassword = async (req, res) => {
 
 const validLogin = async (username, password) => {
   //to avoid hackers from guessing the password, random delay in each pass check
-  const user = await User.findOne({ username: username });
-  if (!user) {
+
+   //to ensure that the user input is interpreted as a literal value and not as a query object, In Mongoose, when you use the { field: value } syntax, it automatically performs an equality check, and there's no need to explicitly use $eq
+   const user = await User.findOne({ username });
+  
+   if (!user) {
     return false;
   }
   const passwordIsValid = bcrypt.compareSync(password, user.password);
