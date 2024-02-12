@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import React, { createContext, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import authApi from "../api/AuthApi";
 import cookie from "react-cookies";
@@ -47,8 +47,19 @@ export const AuthProvider = ({ children }) => {
   };
   const handlePswdCheck = async (pswd) => {
     try {
-      const res = await authApi.post("/validate", { password: pswd });
+      await authApi.post("/validate", { password: pswd });
     } catch (error) {
+      return error.response?.data ? error.response.data.message : error.message;
+    }
+  };
+  const handleOAuth = async () => {
+    try {
+      const data = await authApi.get("/oauthUrl");
+      console.log("fetch info : ", data);
+      const url = data.data.url;
+      window.open(url, "_blank", "noreferrer");
+    } catch (error) {
+      console.log("error : ", error);
       return error.response?.data ? error.response.data.message : error.message;
     }
   };
@@ -58,6 +69,7 @@ export const AuthProvider = ({ children }) => {
     onLogout: handleLogout,
     onRegister: handleSignup,
     onPasswordCheck: handlePswdCheck,
+    onOAuth: handleOAuth,
   };
 
   return (
