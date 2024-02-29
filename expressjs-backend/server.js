@@ -34,6 +34,7 @@ app.use(limiter);
 //routes
 require("./src/routes/auth.routes")(app);
 require("./src/routes/user.routes")(app);
+require("./src/routes/oauth.routes")(app);
 
 //db connect
 connectDB();

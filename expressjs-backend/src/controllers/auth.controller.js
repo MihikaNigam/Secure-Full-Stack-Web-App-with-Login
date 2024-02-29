@@ -1,4 +1,5 @@
 const db = require("../models");
+const { OAuth2Client } = require("google-auth-library");
 const User = db.user;
 
 const bcrypt = require("bcrypt");
@@ -93,13 +94,34 @@ exports.validatePassword = async (req, res) => {
   }
 };
 
+// Redirect to Google OAuth consent screen
+exports.oauthUrlRequest = async (req, res) => {
+  try {
+    const oAuth2Client = new OAuth2Client(
+      process.env.CLIENT_ID,
+      process.env.CLIENT_SECRET,
+      "https://localhost:8000/api/oauth"
+    );
+    const authorizeUrl = oAuth2Client.generateAuthUrl({
+      access_type: "offline",
+      scope: "https://www.googleapis.com/auth/userinfo.profile openid",
+      prompt: "consent",
+    });
+    //res.redirect(authorizeUrl);
+    return res.send({ url: authorizeUrl });
+  } catch (error) {
+    console.log("go this error: ", error);
+    return res.status(500).send({ message: error.message });
+  }
+};
+
 const validLogin = async (username, password) => {
   //to avoid hackers from guessing the password, random delay in each pass check
 
-   //to ensure that the user input is interpreted as a literal value and not as a query object, In Mongoose, when you use the { field: value } syntax, it automatically performs an equality check, and there's no need to explicitly use $eq
-   const user = await User.findOne({ username });
-  
-   if (!user) {
+  //to ensure that the user input is interpreted as a literal value and not as a query object, In Mongoose, when you use the { field: value } syntax, it automatically performs an equality check, and there's no need to explicitly use $eq
+  const user = await User.findOne({ username });
+
+  if (!user) {
     return false;
   }
   const passwordIsValid = bcrypt.compareSync(password, user.password);
