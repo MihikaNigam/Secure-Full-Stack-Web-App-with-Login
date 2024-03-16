@@ -16,4 +16,5 @@ module.exports = function (app) {
   app.post("/api/auth/signout", controller.signout);
   app.post("/api/auth/validate", controller.validatePassword);
   app.get("/api/auth/oauthUrl",controller.oauthUrlRequest);
+  app.get("/api/oauth",controller.oauthLogin);
 };

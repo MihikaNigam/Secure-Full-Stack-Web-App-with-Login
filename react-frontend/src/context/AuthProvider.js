@@ -57,7 +57,7 @@ export const AuthProvider = ({ children }) => {
       const data = await authApi.get("/oauthUrl");
       console.log("fetch info : ", data);
       const url = data.data.url;
-      window.open(url, "_blank", "noreferrer");
+      window.location.href = url;
     } catch (error) {
       console.log("error : ", error);
       return error.response?.data ? error.response.data.message : error.message;
