@@ -17,7 +17,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "HTTPS=true SSL_CRT_FILE=./reactcert/cert.pem SSL_KEY_FILE=./reactcert/key.pem react-scripts start",
+    "start": "HTTPS=true SSL_CRT_FILE=./reactcert/cert.pem SSL_KEY_FILE=./reactcert/key.pem react-scripts --openssl-legacy-provider start",
     "generate-sbom": "cyclonedx-npm",
     "build": "react-scripts build",
     "test": "react-scripts test",

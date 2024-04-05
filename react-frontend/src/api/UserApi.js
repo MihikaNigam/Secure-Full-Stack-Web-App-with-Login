@@ -10,7 +10,6 @@ export const fetchAllUsers = async () => {
   try {
     const response = await UserApi.get("/users");
     const users = response.data;
-    console.log("My userss: ", users);
     return users;
   } catch (error) {
     console.log("error? ", error);

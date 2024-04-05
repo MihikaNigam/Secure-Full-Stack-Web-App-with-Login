@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import GoogleButton from "../../assets/btn_google_signin_dark_pressed_web.png";
 import { useAuth } from "../../context/AuthProvider";
 import { ColorRing } from "react-loader-spinner";
 import "./Login.css";
@@ -25,6 +26,16 @@ export const Login = () => {
     setLoginStatusMessage(null);
     setIsLoading(true);
     const mssg = await value.onLogin(formData);
+    setIsLoading(false);
+    if (mssg) {
+      setLoginStatusMessage(mssg);
+    }
+  };
+
+  const oauthLogin = async () => {
+    setLoginStatusMessage(null);
+    setIsLoading(true);
+    const mssg = await value.onOAuth();
     setIsLoading(false);
     if (mssg) {
       setLoginStatusMessage(mssg);
@@ -74,6 +85,9 @@ export const Login = () => {
           </button>
         )}
       </form>
+      <button className="btn-auth" type="button" onClick={oauthLogin}>
+        <img className="btn-auth-img" src={GoogleButton} alt="google sign in" />
+      </button>
     </>
   );
 };

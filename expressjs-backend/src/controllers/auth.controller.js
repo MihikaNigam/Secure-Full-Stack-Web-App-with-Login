@@ -1,4 +1,5 @@
 const db = require("../models");
+const { OAuth2Client } = require("google-auth-library");
 const User = db.user;
 
 const bcrypt = require("bcrypt");
@@ -96,10 +97,10 @@ exports.validatePassword = async (req, res) => {
 const validLogin = async (username, password) => {
   //to avoid hackers from guessing the password, random delay in each pass check
 
-   //to ensure that the user input is interpreted as a literal value and not as a query object, In Mongoose, when you use the { field: value } syntax, it automatically performs an equality check, and there's no need to explicitly use $eq
-   const user = await User.findOne({ username });
-  
-   if (!user) {
+  //to ensure that the user input is interpreted as a literal value and not as a query object, In Mongoose, when you use the { field: value } syntax, it automatically performs an equality check, and there's no need to explicitly use $eq
+  const user = await User.findOne({ username });
+
+  if (!user) {
     return false;
   }
   const passwordIsValid = bcrypt.compareSync(password, user.password);
@@ -120,3 +121,63 @@ const generateToken = (username) => {
     expiresIn: 3600, // 24 hours
   });
 };
+
+const oAuth2Client = new OAuth2Client(
+  process.env.CLIENT_ID,
+  process.env.CLIENT_SECRET,
+  "https://localhost:8000/api/oauth"
+);
+
+// Redirect to Google OAuth consent screen
+exports.oauthUrlRequest = async (req, res) => {
+  try {
+    const authorizeUrl = oAuth2Client.generateAuthUrl({
+      access_type: "offline",
+      scope: "https://www.googleapis.com/auth/userinfo.profile openid",
+      prompt: "consent",
+    });
+    return res.send({ url: authorizeUrl });
+  } catch (error) {
+    console.log("go this error: ", error);
+    return res.status(500).send({ message: error.message });
+  }
+};
+
+exports.oauthLogin = async (req, res) => {
+  try {
+    const { code } = req.query;
+    const result = await oAuth2Client.getToken(code);
+    oAuth2Client.setCredentials(result.tokens);
+    const user = oAuth2Client.credentials;
+    const userData = await getUserData(user.access_token);
+    token = generateToken(userData.sub);
+    const existingUser = await User.findOne({
+      username: userData.family_name + userData.given_name,
+    });
+    if (existingUser) {
+    } else {
+      const u = new User({
+        username: userData.family_name + userData.given_name,
+        password: await bcrypt.hash(user.id_token, 8),
+      });
+      await u.save();
+    }
+    req.session.token = token;
+    return res.redirect(
+      303,
+      `https://localhost:3000?cookie=${token}&user=${
+        userData.family_name + userData.given_name
+      }`
+    );
+  } catch (err) {
+    console.log("Error with signin with Google", err);
+    return res.status(500).send({ message: err.message });
+  }
+};
+
+async function getUserData(access_token) {
+  const response = await fetch(
+    `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`
+  );
+  return await response.json();
+}

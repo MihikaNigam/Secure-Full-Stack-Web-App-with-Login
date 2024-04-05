@@ -2,7 +2,7 @@ import { Routes, Route, NavLink } from "react-router-dom";
 import { Home } from "./Home/Home";
 import { Landing } from "./Landing/Landing";
 import { ProtectedRoute } from "../utils/ProtectedRoute";
-import React from "react";
+import React, { useEffect } from "react";
 import { useAuth } from "../context/AuthProvider";
 import { AuthProvider } from "../context/AuthProvider";
 import { Login } from "./Login/Login";
@@ -10,6 +10,18 @@ import { Signup } from "./Signup/Signup";
 import cookie from "react-cookies";
 
 const App = () => {
+  useEffect(() => {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const token = urlParams.get("cookie");
+    const user=urlParams.get("user");
+
+    if (token && !cookie.load("auth-session")) {
+      cookie.save("auth-session", token, { path: "/" });
+      cookie.save("user", user, { path: "/" });
+      window.location.reload();
+    }
+  });
   return (
     <>
       <AuthProvider>
